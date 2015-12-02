@@ -23,5 +23,11 @@ public class LoginActivity extends AppCompatActivity  {
         this.startActivity(intent);
     }
 
+    @OnClick(R.id.email_sign_in_button)
+    public void startChatActivity() {
+        Intent intent = new Intent(this, ChatActivity.class);
+        this.startActivity(intent);
+    }
+
 }
 
