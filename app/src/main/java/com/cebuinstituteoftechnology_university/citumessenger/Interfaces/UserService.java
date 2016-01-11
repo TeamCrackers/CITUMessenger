@@ -22,7 +22,6 @@ public interface UserService {
      Call<User> login(@Body User user);
     @POST("/user/register")
      Call<User> register(@Body User user);
-
     @GET("/user/test")
      Call<User> test();
 }

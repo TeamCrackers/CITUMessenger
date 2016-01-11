@@ -9,11 +9,14 @@ import android.util.Log;
 import com.cebuinstituteoftechnology_university.citumessenger.Config.AppConfig;
 import com.cebuinstituteoftechnology_university.citumessenger.Interfaces.UserService;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -55,6 +58,7 @@ public class LoginActivity extends AppCompatActivity  {
                 User user = new User("username","password");
                 try {
                     Response<User> st  = userService.login(user).execute();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -79,9 +83,8 @@ public class LoginActivity extends AppCompatActivity  {
                 }
             });*/
 
-
-
         Intent intent = new Intent(this, ChatActivity.class);
+
         this.startActivity(intent);
     }
 
