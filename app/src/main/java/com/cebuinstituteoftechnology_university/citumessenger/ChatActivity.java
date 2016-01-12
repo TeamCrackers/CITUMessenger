@@ -53,6 +53,7 @@ public class ChatActivity extends AppCompatActivity {
                 public void call(Object... args) {
                      try {
                          final JSONObject json = (JSONObject)args[0];
+
                          runOnUiThread(new Runnable() {
                              @Override
                              public void run() {

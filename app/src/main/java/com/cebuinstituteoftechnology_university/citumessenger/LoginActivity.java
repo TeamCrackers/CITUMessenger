@@ -4,24 +4,15 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.cebuinstituteoftechnology_university.citumessenger.Config.AppConfig;
 import com.cebuinstituteoftechnology_university.citumessenger.Interfaces.UserService;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit.Call;
-import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
@@ -65,7 +56,7 @@ public class LoginActivity extends AppCompatActivity  {
                 return  null;
             }
         };
-        s.execute();
+        //s.execute();
 
 
 
