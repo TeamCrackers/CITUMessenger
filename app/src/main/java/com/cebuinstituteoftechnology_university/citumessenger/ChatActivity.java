@@ -1,5 +1,6 @@
 package com.cebuinstituteoftechnology_university.citumessenger;
 
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,9 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.cebuinstituteoftechnology_university.citumessenger.Adapters.ChatAdapter;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Message;
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +21,10 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -33,32 +36,54 @@ public class ChatActivity extends AppCompatActivity {
 
     // CHAT
     private Socket socket;
-
+    private String ip = "192.168.56.1";
+    private int port = 3000;
     private void initializeConnectionAndListeners(){
         try {
-            socket = IO.socket("http://192.168.43.10:3000/");
-            socket.on("connect", new Emitter.Listener() {
+            socket = IO.socket("http://" + ip + ":" + port + "/");
+            socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                     int n = 0;
+                    socket.emit("userid", "HAHAHA IAN is GREAT");
+                    socket.emit("join room","testid");
+
                 }
-            });
-            socket.on("receive message", new Emitter.Listener() {
+            }).on("receive message", new Emitter.Listener() {
                  @Override
                 public void call(Object... args) {
-                    System.out.print("");
+                     try {
+                         final JSONObject json = (JSONObject)args[0];
+                         runOnUiThread(new Runnable() {
+                             @Override
+                             public void run() {
+                                 Message msg = new Message();
+                                 try {
+                                     msg.setMessage(json.getString("message"));
+                                 } catch (JSONException e) {
+                                     e.printStackTrace();
+                                 }
+                                 msg.setTimeStamp(new Date());
+                                 displayMessage(msg);
+                             }
+                         });
+                         Snackbar.make(findViewById(R.id.chatActvityRoot),"Message Received from:"+json.getString("user"), Snackbar.LENGTH_SHORT).show();
+                     } catch (Exception e) {
+                        e.printStackTrace();
+                     }
                 }
-            });
-            socket.on("disconnect", new Emitter.Listener() {
+            }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
                     Log.e("INFO", "DISCONNECTED");
                 }
-            });
+            }).on(Socket.EVENT_RECONNECT, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    String s = args.toString();
+                }
+            })
+            ;
             socket.connect();
-            socket.emit("userid", "HAHAHA IAN is GREAT");
-            socket.emit("join room","testid");
-
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
