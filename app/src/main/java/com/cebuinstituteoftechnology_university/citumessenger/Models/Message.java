@@ -8,13 +8,13 @@ import java.util.Date;
 public class Message {
     private long id;
     private String message;
-    private long userId;
+    private String userId;
     private Date timeStamp;
 
     public Message() {
     }
 
-    public Message(long id, String message, long userId, Date timeStamp) {
+    public Message(long id, String message, String userId, Date timeStamp) {
         this.id = id;
         this.message = message;
         this.userId = userId;
@@ -37,11 +37,11 @@ public class Message {
         this.message = message;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

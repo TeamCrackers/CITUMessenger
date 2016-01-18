@@ -24,10 +24,17 @@ public class ChatAdapter extends BaseAdapter {
 
     private List<Message> chatHistory;
     private Activity context;
+    private String userId;
 
     public ChatAdapter(Activity context, List<Message> chatHistory) {
         this.context = context;
         this.chatHistory = chatHistory;
+    }
+
+    public ChatAdapter(Activity context, List<Message> chatHistory, String id) {
+        this.context = context;
+        this.chatHistory = chatHistory;
+        this.userId = id;
     }
 
     @Override
@@ -65,9 +72,9 @@ public class ChatAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         //to simulate whether it me or other sender
-        Random r = new Random();
-        boolean depende = r.nextBoolean();
-        setAlignment(holder, depende);
+        boolean chatPosition = (chatMessage.getUserId().contentEquals(userId) ?
+                                        true : false);
+        setAlignment(holder, chatPosition);
         holder.chatMessage.setText(chatMessage.getMessage());
         holder.chatInfo.setText(chatMessage.getTimeStamp().toString());
 
