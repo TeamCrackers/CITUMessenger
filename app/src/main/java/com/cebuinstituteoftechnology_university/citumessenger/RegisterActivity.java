@@ -25,8 +25,8 @@ public class RegisterActivity extends AppCompatActivity {
     AppCompatEditText password;
     @Bind(R.id.confirmPassword)
     AppCompatEditText conf_password;
-    @Bind(R.id.previewCard)
-    CardView previewCard;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
