@@ -16,12 +16,12 @@ import retrofit.http.Path;
  * Created by osias on 11/23/2015.
  */
 public interface UserService {
-    @GET("/user/ {userId}")
+    @GET("/user/{userId}")
      Call<List<User>> getUser(@Path("userId")String user_id);
     @POST("/user/login")
      Call<User> login(@Body User user);
     @POST("/user/register")
-     Call<User> register(@Body User user);
+     Call<Boolean> register(@Body User user);
     @GET("/user/test")
      Call<User> test();
 }

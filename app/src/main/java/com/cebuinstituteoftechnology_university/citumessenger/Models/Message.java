@@ -1,11 +1,12 @@
 package com.cebuinstituteoftechnology_university.citumessenger.Models;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Andrew Paul Mago on 12/2/2015.
  */
-public class Message {
+public class Message implements Serializable {
     private long id;
     private String message;
     private String userId;

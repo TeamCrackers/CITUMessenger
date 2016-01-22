@@ -1,32 +1,31 @@
 package com.cebuinstituteoftechnology_university.citumessenger.Models;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by ianosias on 11/11/15.
  */
-public class User {
-    public static final int USERTYPE_STUDENT    = 0;
-    public static final int USERTYPE_TEACHER    = 1;
-    public static final int USERTYPE_ADMIN      = 2;
+public class User implements Serializable{
     // Login Information
     private String id;
+    private String schoolId;
     private String password;
 
     // User Information
     private String firstName;
     private String lastName;
     private String course;
+    private String email;
     private int yearLevel;
-    private int userType;
-    // Messenger information
 
+    // Messenger information
     private List<User> friends;
-    private List<Class> classes;
+    private List<Conversation> conversations;
 
     // Security Information
     private String accessToken;
-
+    private boolean online;
     public User(String id, String password) {
         this.id = id;
         this.password = password;
@@ -38,6 +37,14 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getSchoolId() {
+        return schoolId;
+    }
+
+    public void setSchoolId(String schoolId) {
+        this.schoolId = schoolId;
     }
 
     public String getPassword() {
@@ -72,20 +79,20 @@ public class User {
         this.course = course;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public int getYearLevel() {
         return yearLevel;
     }
 
     public void setYearLevel(int yearLevel) {
         this.yearLevel = yearLevel;
-    }
-
-    public int getUserType() {
-        return userType;
-    }
-
-    public void setUserType(int userType) {
-        this.userType = userType;
     }
 
     public List<User> getFriends() {
@@ -96,12 +103,12 @@ public class User {
         this.friends = friends;
     }
 
-    public List<Class> getClasses() {
-        return classes;
+    public List<Conversation> getConversations() {
+        return conversations;
     }
 
-    public void setClasses(List<Class> classes) {
-        this.classes = classes;
+    public void setConversations(List<Conversation> conversations) {
+        this.conversations = conversations;
     }
 
     public String getAccessToken() {
@@ -110,5 +117,13 @@ public class User {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
     }
 }
