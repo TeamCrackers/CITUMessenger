@@ -18,7 +18,7 @@ import retrofit.http.Path;
 public interface UserService {
     @GET("/user/ {userId}")
      Call<List<User>> getUser(@Path("userId")String user_id);
-    @POST("/user//login")
+    @POST("/user/login")
      Call<User> login(@Body User user);
     @POST("/user/register")
      Call<User> register(@Body User user);

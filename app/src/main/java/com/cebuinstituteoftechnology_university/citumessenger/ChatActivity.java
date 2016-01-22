@@ -118,7 +118,7 @@ public class ChatActivity extends AppCompatActivity {
                 chatMessage.setId(123);//dummy
                 chatMessage.setMessage(messageText);
                 chatMessage.setTimeStamp(new Date());
-                chatMessage.setUserId(100);
+                chatMessage.setUserId("Ian");
 
                 composeMessage.setText("");
 
@@ -156,18 +156,22 @@ public class ChatActivity extends AppCompatActivity {
         msg.setId(1);
         msg.setMessage("Hi");
         msg.setTimeStamp(new Date());
+        msg.setUserId("Ian");
         chatHistory.add(msg);
         Message msg1 = new Message();
         msg1.setId(2);
         msg1.setMessage("How are you?");
         msg1.setTimeStamp(new Date());
+        msg1.setUserId("Nelson");
         chatHistory.add(msg1);
         Message msg2 = new Message();
         msg2.setId(3);
         msg2.setMessage("Chuya gud.");
         msg2.setTimeStamp(new Date());
+        msg2.setUserId("Garces");
         chatHistory.add(msg2);
-        adapter = new ChatAdapter(ChatActivity.this, new ArrayList<Message>());
+        adapter = new ChatAdapter(ChatActivity.this, new ArrayList<Message>(),"Ian");
+
         messagesContainer.setAdapter(adapter);
 
         for(int i=0; i<chatHistory.size(); i++) {
