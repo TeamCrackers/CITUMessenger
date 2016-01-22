@@ -1,13 +1,19 @@
 package com.cebuinstituteoftechnology_university.citumessenger;
 
+import android.content.Intent;
+import android.support.annotation.LayoutRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -22,6 +28,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -31,8 +40,19 @@ public class ChatActivity extends AppCompatActivity {
     private EditText composeMessage;
     private ListView messagesContainer;
     private Button sendBtn;
+    private ListView roomParticipants;
     private ChatAdapter adapter;
     private ArrayList<Message> chatHistory;
+
+    @OnClick(R.id.addPeople)
+    public void addPeople() {
+        startActivity(new Intent(this,AddPeopleActivity.class));
+    }
+
+    @OnClick(R.id.leaveRoom)
+    public void leaveRoom() {
+        this.finish();
+    }
 
     // CHAT
     private Socket socket;
@@ -94,6 +114,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        ButterKnife.bind(this);
         initControls();
         initializeConnectionAndListeners();
     }
@@ -102,6 +123,7 @@ public class ChatActivity extends AppCompatActivity {
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
         composeMessage = (EditText) findViewById(R.id.composeMessage);
         sendBtn = (Button) findViewById(R.id.sendButton);
+        roomParticipants = (ListView) findViewById(R.id.right_drawer_child);
 
         RelativeLayout container = (RelativeLayout) findViewById(R.id.container);
         loadDummyHistory();
@@ -152,6 +174,7 @@ public class ChatActivity extends AppCompatActivity {
 
         chatHistory = new ArrayList<Message>();
 
+        String[] names = new String[] {"Ian", "Nelson", "Garces", "Cagot", "Junjie", "Lolito"};
         Message msg = new Message();
         msg.setId(1);
         msg.setMessage("Hi");
@@ -171,6 +194,9 @@ public class ChatActivity extends AppCompatActivity {
         msg2.setUserId("Garces");
         chatHistory.add(msg2);
         adapter = new ChatAdapter(ChatActivity.this, new ArrayList<Message>(),"Ian");
+        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_list_item_1,names);
+
+        roomParticipants.setAdapter(aa);
 
         messagesContainer.setAdapter(adapter);
 
@@ -180,7 +206,8 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-
-
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
 }

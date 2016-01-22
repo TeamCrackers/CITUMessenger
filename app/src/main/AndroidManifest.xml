@@ -34,6 +34,14 @@
             android:name=".BackgroundServices.AuthenticationService"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name=".test"
+            android:label="@string/title_activity_test"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity android:name=".AddPeopleActivity" >
+        </activity>
     </application>
 
 </manifest>
