@@ -50,11 +50,16 @@ public class LoginActivity extends AppCompatActivity  {
 
     @OnClick(R.id.email_sign_in_button)
     public void startChatActivity() {
-        myReceiver = new AuthenticationReceiver();
+        /*myReceiver = new AuthenticationReceiver();
         IntentFilter filter = new IntentFilter(AuthenticationService.ACTION_CHECK_ACCESS_TOKEN);
-        LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver,filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver, filter);
         User n = new User("ian","osias");
         AuthenticationService.startAccessTokenCheck(this,n);
+        Intent test = new Intent(this,ChatActivity.class);
+        startActivity(test);
+*/
+        Intent test = new Intent(this,HomeActivity.class);
+        startActivity(test);
         /*
         AsyncTask s = new AsyncTask() {
             @Override

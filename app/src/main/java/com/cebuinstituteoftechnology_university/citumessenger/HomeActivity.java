@@ -7,17 +7,28 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+
+import com.cebuinstituteoftechnology_university.citumessenger.Adapters.NotificationAdapter;
+import com.cebuinstituteoftechnology_university.citumessenger.Models.Notification;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+import butterknife.ButterKnife;
 
 public class HomeActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+
+    // For notifications
+
+
     private int[] tabIcons = {
             android.R.drawable.sym_action_chat,
             R.drawable.avatar,
@@ -27,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        ButterKnife.bind(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -82,5 +93,6 @@ public class HomeActivity extends AppCompatActivity {
             return mFragmentTitleList.get(position);
         }
     }
+
 
 }
