@@ -26,8 +26,18 @@ public class User implements Serializable{
     // Security Information
     private String accessToken;
     private boolean online;
+    private String errorMessage;
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     public User(String id, String password) {
-        this.id = id;
+        this.schoolId = id;
         this.password = password;
     }
 

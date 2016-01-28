@@ -3,12 +3,11 @@ package com.cebuinstituteoftechnology_university.citumessenger.BackgroundService
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
-import android.support.v4.content.LocalBroadcastManager;
-import android.widget.Toast;
 
 import com.cebuinstituteoftechnology_university.citumessenger.Config.AppConfig;
+import com.cebuinstituteoftechnology_university.citumessenger.Events.AuthenticationEvent;
 import com.cebuinstituteoftechnology_university.citumessenger.Events.MessageEvent;
-import com.cebuinstituteoftechnology_university.citumessenger.Interfaces.UserService;
+import com.cebuinstituteoftechnology_university.citumessenger.APIRestInterfaces.UserService;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class AuthenticationService extends IntentService {
     public static final String FLAG_SUCCESSFUL = "SUCCESS";
     public static final String FLAG_FAILED = "FAILED";
 
-    public static User currentUser;
+
     private static UserService userService;
 
     public static void startAccessTokenCheck(Context context,User user ){
@@ -94,10 +93,18 @@ public class AuthenticationService extends IntentService {
     private void handleActionLogin(User user){
         try {
             Response<User> response  = userService.login(user).execute();
-            if(response.body()!=null) {
-                currentUser = response.body();
-                EventBus.getDefault().post(new MessageEvent(FLAG_SUCCESSFUL));
+            AuthenticationEvent event = new AuthenticationEvent();
+            User currentUser = response.body();
+            if(currentUser!=null && currentUser.getErrorMessage() == null) {
+                event.setEventType(AuthenticationEvent.LOGIN_EVENT);
+                event.setMessage(AuthenticationEvent.LOGIN_SUCCESS);
+                event.setUser(currentUser);
             }
+            else{
+                event.setEventType(AuthenticationEvent.LOGIN_EVENT);
+                event.setMessage(AuthenticationEvent.LOGIN_WRONG_CREDENTIALS_ERROR);
+            }
+            EventBus.getDefault().post(event);
 
         } catch (IOException e) {
             EventBus.getDefault().post(new MessageEvent(FLAG_FAILED));
@@ -118,9 +125,7 @@ public class AuthenticationService extends IntentService {
 
 
     private void handleActionCheckToken(String usernid,String password,String currentToken){
-        Intent intent = new Intent(ACTION_CHECK_ACCESS_TOKEN);
-        intent.putExtra("message","Nice ka one");
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
 
     }
 }

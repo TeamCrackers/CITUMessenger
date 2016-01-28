@@ -1,30 +1,21 @@
 package com.cebuinstituteoftechnology_university.citumessenger;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.widget.Toast;
 
 
 import com.cebuinstituteoftechnology_university.citumessenger.BackgroundServices.AuthenticationService;
-import com.cebuinstituteoftechnology_university.citumessenger.Config.AppConfig;
 import com.cebuinstituteoftechnology_university.citumessenger.Events.MessageEvent;
-import com.cebuinstituteoftechnology_university.citumessenger.Interfaces.UserService;
+import com.cebuinstituteoftechnology_university.citumessenger.APIRestInterfaces.UserService;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
-
-import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
 
 public class RegisterActivity extends AppCompatActivity {
     @Bind(R.id.idNummber)

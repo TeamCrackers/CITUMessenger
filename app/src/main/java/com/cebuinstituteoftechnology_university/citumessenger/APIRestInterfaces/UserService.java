@@ -1,8 +1,6 @@
-package com.cebuinstituteoftechnology_university.citumessenger.Interfaces;
+package com.cebuinstituteoftechnology_university.citumessenger.APIRestInterfaces;
 
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
-
-import org.json.JSONObject;
 
 import java.util.List;
 

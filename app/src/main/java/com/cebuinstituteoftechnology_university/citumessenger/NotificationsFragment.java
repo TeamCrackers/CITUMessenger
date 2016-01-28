@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 
 public class NotificationsFragment extends android.support.v4.app.Fragment {
@@ -32,9 +33,10 @@ public class NotificationsFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        //EventBus.getDefault().register(this);
     }
+
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -66,6 +68,7 @@ public class NotificationsFragment extends android.support.v4.app.Fragment {
         return v;
 
     }
+
 
 
 

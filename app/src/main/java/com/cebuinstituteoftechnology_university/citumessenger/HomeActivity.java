@@ -1,5 +1,6 @@
 package com.cebuinstituteoftechnology_university.citumessenger;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -12,7 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import com.cebuinstituteoftechnology_university.citumessenger.Adapters.NotificationAdapter;
+import com.cebuinstituteoftechnology_university.citumessenger.Config.AppConfig;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Notification;
+import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +28,7 @@ public class HomeActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-
+    public static User CURRENT_USER = null;
     // For notifications
 
 
@@ -48,6 +51,9 @@ public class HomeActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
+
+        if(CURRENT_USER ==null)this.startActivity(new Intent(this, LoginActivity.class));
+
     }
 
     private void setupTabIcons() {
