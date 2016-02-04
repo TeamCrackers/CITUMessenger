@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 
 import com.cebuinstituteoftechnology_university.citumessenger.Adapters.NotificationAdapter;
 import com.cebuinstituteoftechnology_university.citumessenger.Config.AppConfig;
@@ -33,10 +34,17 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private int[] tabIcons = {
-            android.R.drawable.sym_action_chat,
-            R.drawable.avatar,
+            R.drawable.inbox,
+            R.drawable.friends,
             R.drawable.notification_icon
     };
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +73,8 @@ public class HomeActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new InboxFragment(), "INBOX");
-        adapter.addFragment(new Fragment(), "FRIENDS");
-        adapter.addFragment(new NotificationsFragment(), "!");
+        adapter.addFragment(new FriendsFragment(), "FRIENDS");
+        adapter.addFragment(new NotificationsFragment(), "NOTIFS");
 
         viewPager.setAdapter(adapter);
     }
