@@ -1,9 +1,12 @@
 package com.cebuinstituteoftechnology_university.citumessenger;
 
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -15,10 +18,11 @@ import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import de.greenrobot.event.EventBus;
 
 public class RegisterActivity extends AppCompatActivity {
-    @Bind(R.id.idNummber)
+    @Bind(R.id.idTextBox)
     AppCompatAutoCompleteTextView idNumber;
     @Bind(R.id.firstName)
     AppCompatAutoCompleteTextView firstName;
@@ -30,6 +34,17 @@ public class RegisterActivity extends AppCompatActivity {
     AppCompatEditText password;
     @Bind(R.id.confirmPassword)
     AppCompatEditText conf_password;
+    @Bind(R.id.nickName)
+    AppCompatAutoCompleteTextView nickName;
+
+    @Bind(R.id.idLabel)
+    TextView idLabel;
+    @Bind(R.id.firstNameLabel)
+    TextView firstNameLabel;
+    @Bind(R.id.lastNameLabel)
+    TextView lastNameLabel;
+    @Bind(R.id.nickNameLabel)
+    TextView nickNameLabel;
 
     UserService userService;
 
@@ -53,6 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
             user.setLastName(lastName.getText().toString());
             user.setEmail(email.getEditableText().toString());
             user.setSchoolId(idNumber.getEditableText().toString());
+            user.setPassword(password.getText().toString());
             AuthenticationService.startActionRegister(this,user);
         }
     }
@@ -62,11 +78,39 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void onEvent(MessageEvent messageEvent){
-        if(messageEvent.getMessage().contentEquals(AuthenticationService.FLAG_SUCCESSFUL))
-            finish();
+        if(messageEvent.getMessage().contentEquals(AuthenticationService.FLAG_SUCCESSFUL)){
+            Snackbar snack = Snackbar.make(this.findViewById(R.id.registerRootLayout), "Successfully registered user.", Snackbar.LENGTH_INDEFINITE);
+            snack.setAction("Go Back", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+            snack.show();
+        }
+
         else
             Toast.makeText(this,"Unsuccessful Registration",Toast.LENGTH_SHORT).show();
 
+    }
+
+    @OnTextChanged(R.id.idTextBox)
+    public void schoolIdChange(){
+        idLabel.setText(this.idNumber.getText().toString());
+    }
+
+    @OnTextChanged(R.id.firstName)
+    public void firstNameChange(){
+        firstNameLabel.setText(this.firstName.getText().toString());
+    }
+    @OnTextChanged(R.id.lastName)
+    public void lastNameChange(){
+       lastNameLabel.setText(this.lastName.getText().toString());
+    }
+
+    @OnTextChanged(R.id.nickName)
+    public void nickNameChange(){
+        nickNameLabel.setText(this.nickName.getText().toString());
     }
 
     @Override
