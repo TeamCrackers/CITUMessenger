@@ -23,6 +23,8 @@ public class AuthenticationService extends IntentService {
     public static final String ACTION_CHECK_ACCESS_TOKEN = "CHECK_TOKEN";
     public static final String ACTION_LOGIN = "USER_LOGIN";
     public static final String ACTION_REGISTER = "USER_REGISTER";
+    public static final String ACTION_GET_FRIEND = "GET_FRIEND";
+
 
     private static final String EXTRA_USERID = "userid";
     private static final String EXTRA_USER_OBJECT = "user";
@@ -57,6 +59,13 @@ public class AuthenticationService extends IntentService {
         context.startService(intent);
     }
 
+    public static void getFriend(Context context,User user ){
+        Intent intent = new Intent(context, AuthenticationService.class);
+        intent.setAction(ACTION_GET_FRIEND);
+        intent.putExtra(EXTRA_USER_OBJECT,user);
+        context.startService(intent);
+    }
+
     public AuthenticationService() {
         super("AuthenticationService");
     }
@@ -84,8 +93,12 @@ public class AuthenticationService extends IntentService {
             else if(ACTION_LOGIN.equals(action)){
                 handleActionLogin((User)intent.getSerializableExtra(EXTRA_USER_OBJECT));
             }
-            if(ACTION_REGISTER.equals(action)){
+            else if(ACTION_REGISTER.equals(action)){
                 handleActionRegister((User) intent.getSerializableExtra(EXTRA_USER_OBJECT));
+            }
+            else if(ACTION_GET_FRIEND.equals(action))
+            {
+                handleGetUser((User)intent.getSerializableExtra(EXTRA_USER_OBJECT));
             }
         }
     }
@@ -127,5 +140,24 @@ public class AuthenticationService extends IntentService {
     private void handleActionCheckToken(String usernid,String password,String currentToken){
 
 
+    }
+
+    private void handleGetUser(User user)
+    {
+        try {
+            Response<User> response  = userService.getUser(user.getSchoolId()).execute();
+            AuthenticationEvent event = new AuthenticationEvent();
+            event.setUser(response.body());
+            if(response.body() != null) {
+                event.setMessage(AuthenticationEvent.USER_GET_SUCCESS);
+
+            }
+            else
+                event.setMessage(AuthenticationEvent.USER_GET_FAILED);
+            EventBus.getDefault().post(event);
+
+        } catch (IOException e) {
+            EventBus.getDefault().post(new MessageEvent(FLAG_FAILED));
+        }
     }
 }

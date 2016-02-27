@@ -25,7 +25,7 @@ public class FriendsFragment extends android.support.v4.app.Fragment {
     @Bind(R.id.friendList)
     RecyclerView friendList;
     RecyclerView.LayoutManager friendsManager;
-    FriendListAdapter friendListAdapter;
+    public FriendListAdapter friendListAdapter;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -52,9 +52,17 @@ public class FriendsFragment extends android.support.v4.app.Fragment {
         friendList.setLayoutManager(friendsManager);
         friendListAdapter  = new FriendListAdapter(new ArrayList<Friends>());
         friendList.setAdapter(friendListAdapter);
-        test();
+       //123 test();
         friendListAdapter.notifyDataSetChanged();
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    public void clearFriendList(){
+        friendListAdapter.clear();
+    }
+    public void addFriend(Friends friend){
+        friendListAdapter.addNewFriend(friend);
+        friendListAdapter.notifyDataSetChanged();
     }
 
     private void test() {

@@ -14,7 +14,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import com.cebuinstituteoftechnology_university.citumessenger.Adapters.NotificationAdapter;
+import com.cebuinstituteoftechnology_university.citumessenger.BackgroundServices.AuthenticationService;
 import com.cebuinstituteoftechnology_university.citumessenger.Config.AppConfig;
+import com.cebuinstituteoftechnology_university.citumessenger.Events.AuthenticationEvent;
+import com.cebuinstituteoftechnology_university.citumessenger.Models.Friends;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Notification;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
 
@@ -22,7 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -30,6 +35,8 @@ public class HomeActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     public static User CURRENT_USER = null;
+    FriendsFragment friendsFragment;
+
     // For notifications
 
 
@@ -61,6 +68,42 @@ public class HomeActivity extends AppCompatActivity {
         setupTabIcons();
 
         if(CURRENT_USER ==null)this.startActivity(new Intent(this, LoginActivity.class));
+        EventBus.getDefault().register(this);
+
+    }
+
+    public void onEvent(AuthenticationEvent event)
+    {
+        if(event.getMessage() == AuthenticationEvent.USER_GET_SUCCESS)
+        {
+            final User user = event.getUser();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Friends friend = new Friends();
+                    friend.setName(user.getFirstName() + " " + user.getLastName());
+                    friendsFragment.addFriend(friend);
+                }
+            });
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(CURRENT_USER!=null)
+        {
+            friendsFragment.clearFriendList();
+            for(String s: CURRENT_USER.getFriends())
+            {
+                User n = new User(null,null);
+                n.setSchoolId(s);
+                AuthenticationService.getFriend(this,n);
+            }
+
+        }
+
 
     }
 
@@ -71,12 +114,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
+        friendsFragment = new FriendsFragment();
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new InboxFragment(), "INBOX");
-        adapter.addFragment(new FriendsFragment(), "FRIENDS");
+        adapter.addFragment(friendsFragment, "FRIENDS");
         adapter.addFragment(new NotificationsFragment(), "NOTIFS");
-
         viewPager.setAdapter(adapter);
+
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

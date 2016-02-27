@@ -11,6 +11,8 @@ public class AuthenticationEvent {
     public static final String LOGIN_WRONG_CREDENTIALS_ERROR= "School ID or Password is incorrect.";
     public static final String LOGIN_CONNECTION_ERROR= "Cannot connect to server";
     public static final String LOGIN_SUCCESS = "LOGIN SUCCESSFUL";
+    public static final String USER_GET_SUCCESS= "USER GET SUCCESSFUL";
+    public static final String USER_GET_FAILED= "USER GET FAILED";
 
 
     private short EventType;

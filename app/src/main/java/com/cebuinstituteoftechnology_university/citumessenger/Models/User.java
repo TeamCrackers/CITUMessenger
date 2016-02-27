@@ -20,7 +20,7 @@ public class User implements Serializable{
     private int yearLevel;
 
     // Messenger information
-    private List<User> friends;
+    private List<String> friends;
     private List<Conversation> conversations;
 
     // Security Information
@@ -105,11 +105,11 @@ public class User implements Serializable{
         this.yearLevel = yearLevel;
     }
 
-    public List<User> getFriends() {
+    public List<String> getFriends() {
         return friends;
     }
 
-    public void setFriends(List<User> friends) {
+    public void setFriends(List<String> friends) {
         this.friends = friends;
     }
 
