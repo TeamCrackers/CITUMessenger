@@ -58,6 +58,10 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         return friendList.size();
     }
 
+    public void clear() {
+        friendList.clear();
+    }
+
     static class ViewHolderFriend extends RecyclerView.ViewHolder {
         @Bind(R.id.friend_avatar)
         public ImageView friendThumbnail;
