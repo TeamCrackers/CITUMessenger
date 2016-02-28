@@ -8,24 +8,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
-import com.cebuinstituteoftechnology_university.citumessenger.Adapters.NotificationAdapter;
 import com.cebuinstituteoftechnology_university.citumessenger.BackgroundServices.AuthenticationService;
-import com.cebuinstituteoftechnology_university.citumessenger.Config.AppConfig;
 import com.cebuinstituteoftechnology_university.citumessenger.Events.AuthenticationEvent;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Friends;
-import com.cebuinstituteoftechnology_university.citumessenger.Models.Notification;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
@@ -81,7 +75,7 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     Friends friend = new Friends();
-                    friend.setName(user.getFirstName() + " " + user.getLastName());
+                    friend.setUserInfo(user);
                     friendsFragment.addFriend(friend);
                 }
             });
@@ -121,6 +115,11 @@ public class HomeActivity extends AppCompatActivity {
         adapter.addFragment(new NotificationsFragment(), "NOTIFS");
         viewPager.setAdapter(adapter);
 
+    }
+
+    public void startChatActivity(){
+        Intent intent = new Intent(this,ChatActivity.class);
+        this.startActivity(intent);
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

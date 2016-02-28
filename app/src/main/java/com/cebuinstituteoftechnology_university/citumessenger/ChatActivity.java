@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -36,6 +37,14 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 public class ChatActivity extends AppCompatActivity {
+
+    public static void startChatActivity(View v,String user1,String user2){
+        ContextThemeWrapper activity = (ContextThemeWrapper) v.getContext();
+        Intent intent = new Intent(activity,ChatActivity.class);
+        intent.putExtra(BUNDLE_EXTRA_USER1, user1);
+        intent.putExtra(BUNDLE_EXTRA_USER2, user2);
+        activity.startActivity(intent);
+    }
 
     private EditText composeMessage;
     private ListView messagesContainer;
@@ -109,14 +118,30 @@ public class ChatActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
+    public static  final String BUNDLE_EXTRA_USER1 = "user1";
+    public static  final String BUNDLE_EXTRA_USER2 = "user1";
+    public String user1;
+    public String user2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+
+        Bundle bundle = this.getIntent().getExtras();
+        user1 = bundle.getString(BUNDLE_EXTRA_USER1);
+        user2 = bundle.getString(BUNDLE_EXTRA_USER2);
+
         initControls();
         initializeConnectionAndListeners();
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Snackbar.make(messagesContainer,user1 + " "+ user2,Snackbar.LENGTH_SHORT).show();
     }
 
     private void initControls() {

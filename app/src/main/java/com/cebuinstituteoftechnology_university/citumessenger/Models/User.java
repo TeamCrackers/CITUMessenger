@@ -12,7 +12,10 @@ public class User implements Serializable{
     private String schoolId;
     private String password;
 
+
+
     // User Information
+    private String nickName;
     private String firstName;
     private String lastName;
     private String course;
@@ -135,5 +138,13 @@ public class User implements Serializable{
 
     public void setOnline(boolean online) {
         this.online = online;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 }

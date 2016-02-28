@@ -23,10 +23,12 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="idNumber">ID Number</string>
+    <string name="idNumber">School ID</string>
+    <string name="wholeName">Whole Name</string>
     <string name="firstName">First Name</string>
     <string name="lastNameText">Last Name</string>
     <string name="nickNameText">Nick Name</string>
+    <string name="emailAddText">Email Address</string>
     <string name="courseText">Course</string>
     <string name="prompt_preview_text">Preview</string>
     <string name="promt_cancel_text">Cancel</string>

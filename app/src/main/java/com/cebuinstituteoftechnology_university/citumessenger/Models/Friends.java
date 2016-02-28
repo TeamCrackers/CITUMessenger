@@ -6,15 +6,15 @@ import android.net.Uri;
  * Created by Nelson on 2/3/2016.
  */
 public class Friends {
-    private String name;
+    private User userInfo;
     private Uri imgSrc;
 
-    public String getName() {
-        return name;
+    public User getUserInfo() {
+        return userInfo;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserInfo(User name) {
+        this.userInfo = name;
     }
 
     public Uri getImgSrc() {

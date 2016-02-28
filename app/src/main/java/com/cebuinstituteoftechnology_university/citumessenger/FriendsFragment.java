@@ -65,13 +65,5 @@ public class FriendsFragment extends android.support.v4.app.Fragment {
         friendListAdapter.notifyDataSetChanged();
     }
 
-    private void test() {
-        Friends friend = new Friends();
-        Friends friend2 = new Friends();
-        friend.setName("Junlito Saitamaria");
-        friend2.setName("PrinceDrew Decenueva");
-        friendListAdapter.addNewFriend(friend);
-        friendListAdapter.addNewFriend(friend2);
 
-    }
 }
