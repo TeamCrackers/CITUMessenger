@@ -93,7 +93,7 @@ public class HomeActivity extends AppCompatActivity {
             {
                 User n = new User(null,null);
                 n.setSchoolId(s);
-                AuthenticationService.getFriend(this,n);
+                AuthenticationService.getUser(this, n);
             }
 
         }

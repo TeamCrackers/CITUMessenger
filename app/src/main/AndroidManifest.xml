@@ -39,11 +39,15 @@
             android:label="Register" >
         </activity>
 
-        <activity android:name=".ChatActivity" >
+        <activity android:name=".ChatActivity" android:label="Conversation" >
         </activity>
 
         <service
             android:name=".BackgroundServices.AuthenticationService"
+            android:exported="false" >
+        </service>
+        <service
+            android:name=".BackgroundServices.ChatService"
             android:exported="false" >
         </service>
 

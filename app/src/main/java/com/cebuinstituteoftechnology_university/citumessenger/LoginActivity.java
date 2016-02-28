@@ -6,13 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cebuinstituteoftechnology_university.citumessenger.APIRestInterfaces.UserAPI;
 import com.cebuinstituteoftechnology_university.citumessenger.BackgroundServices.AuthenticationService;
 import com.cebuinstituteoftechnology_university.citumessenger.Config.AppConfig;
-import com.cebuinstituteoftechnology_university.citumessenger.APIRestInterfaces.UserService;
 import com.cebuinstituteoftechnology_university.citumessenger.Events.AuthenticationEvent;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
 
@@ -27,7 +26,7 @@ import retrofit.Retrofit;
 public class LoginActivity extends AppCompatActivity  {
 
     Retrofit retrofit;
-    UserService userService;
+    UserAPI userService;
     AuthenticationReceiver myReceiver;
     @Bind(R.id.schoolId)
     TextView schoolId;
@@ -44,7 +43,7 @@ public class LoginActivity extends AppCompatActivity  {
                 .baseUrl(AppConfig.host + ":" + AppConfig.port + "")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        userService = retrofit.create(UserService.class);
+        userService = retrofit.create(UserAPI.class);
         EventBus.getDefault().register(this);
     }
 

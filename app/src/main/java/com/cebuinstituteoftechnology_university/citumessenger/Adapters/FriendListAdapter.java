@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cebuinstituteoftechnology_university.citumessenger.BackgroundServices.ChatService;
 import com.cebuinstituteoftechnology_university.citumessenger.ChatActivity;
 import com.cebuinstituteoftechnology_university.citumessenger.HomeActivity;
+import com.cebuinstituteoftechnology_university.citumessenger.Models.Conversation;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Friends;
 import com.cebuinstituteoftechnology_university.citumessenger.R;
 //import com.nostra13.universalimageloader.core.ImageLoader;
@@ -83,7 +85,10 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
                     snack.setAction("OK", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ChatActivity.startChatActivity(v,HomeActivity.CURRENT_USER.getSchoolId(),friend.getUserInfo().getSchoolId());
+                            Conversation conversation = new Conversation();
+                            conversation.addParticipant(HomeActivity.CURRENT_USER);
+                            conversation.addParticipant(friend.getUserInfo());
+                            ChatActivity.startChatActivity(v,conversation );
                         }
                     });
                     snack.show();

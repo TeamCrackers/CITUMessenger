@@ -24,7 +24,7 @@ public class User implements Serializable{
 
     // Messenger information
     private List<String> friends;
-    private List<Conversation> conversations;
+    private List<String> conversations;
 
     // Security Information
     private String accessToken;
@@ -116,11 +116,11 @@ public class User implements Serializable{
         this.friends = friends;
     }
 
-    public List<Conversation> getConversations() {
+    public List<String> getConversations() {
         return conversations;
     }
 
-    public void setConversations(List<Conversation> conversations) {
+    public void setConversations(List<String> conversations) {
         this.conversations = conversations;
     }
 

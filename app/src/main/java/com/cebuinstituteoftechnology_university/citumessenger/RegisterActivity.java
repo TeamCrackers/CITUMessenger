@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.cebuinstituteoftechnology_university.citumessenger.BackgroundServices.AuthenticationService;
 import com.cebuinstituteoftechnology_university.citumessenger.Events.MessageEvent;
-import com.cebuinstituteoftechnology_university.citumessenger.APIRestInterfaces.UserService;
+import com.cebuinstituteoftechnology_university.citumessenger.APIRestInterfaces.UserAPI;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
 
 import butterknife.Bind;
@@ -46,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Bind(R.id.nickNameLabel)
     TextView nickNameLabel;
 
-    UserService userService;
+    UserAPI userService;
 
 
     @Override

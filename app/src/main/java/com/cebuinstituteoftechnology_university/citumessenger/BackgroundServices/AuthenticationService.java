@@ -1,13 +1,13 @@
 package com.cebuinstituteoftechnology_university.citumessenger.BackgroundServices;
 
 import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 
+import com.cebuinstituteoftechnology_university.citumessenger.APIRestInterfaces.UserAPI;
 import com.cebuinstituteoftechnology_university.citumessenger.Config.AppConfig;
 import com.cebuinstituteoftechnology_university.citumessenger.Events.AuthenticationEvent;
 import com.cebuinstituteoftechnology_university.citumessenger.Events.MessageEvent;
-import com.cebuinstituteoftechnology_university.citumessenger.APIRestInterfaces.UserService;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
 
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class AuthenticationService extends IntentService {
     public static final String FLAG_FAILED = "FAILED";
 
 
-    private static UserService userService;
+    private static UserAPI userAPI;
 
     public static void startAccessTokenCheck(Context context,User user ){
         Intent intent = new Intent(context, AuthenticationService.class);
@@ -59,7 +59,7 @@ public class AuthenticationService extends IntentService {
         context.startService(intent);
     }
 
-    public static void getFriend(Context context,User user ){
+    public static void getUser(Context context, User user){
         Intent intent = new Intent(context, AuthenticationService.class);
         intent.setAction(ACTION_GET_FRIEND);
         intent.putExtra(EXTRA_USER_OBJECT,user);
@@ -75,13 +75,13 @@ public class AuthenticationService extends IntentService {
                 .baseUrl(AppConfig.host + ":" + AppConfig.port + "")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        userService = retrofit.create(UserService.class);
+        userAPI = retrofit.create(UserAPI.class);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
-            if(userService==null)
+            if(userAPI ==null)
                 startUserService();
             final String action = intent.getAction();
             if (ACTION_CHECK_ACCESS_TOKEN.equals(action)) {
@@ -105,7 +105,7 @@ public class AuthenticationService extends IntentService {
 
     private void handleActionLogin(User user){
         try {
-            Response<User> response  = userService.login(user).execute();
+            Response<User> response  = userAPI.login(user).execute();
             AuthenticationEvent event = new AuthenticationEvent();
             User currentUser = response.body();
             if(currentUser!=null && currentUser.getErrorMessage() == null) {
@@ -126,7 +126,7 @@ public class AuthenticationService extends IntentService {
 
     private void handleActionRegister(User user){
         try {
-            Response<Boolean> response  = userService.register(user).execute();
+            Response<Boolean> response  = userAPI.register(user).execute();
             if(response.body()) {
                 EventBus.getDefault().post(new MessageEvent(FLAG_SUCCESSFUL));
             }
@@ -145,7 +145,7 @@ public class AuthenticationService extends IntentService {
     private void handleGetUser(User user)
     {
         try {
-            Response<User> response  = userService.getUser(user.getSchoolId()).execute();
+            Response<User> response  = userAPI.getUser(user.getSchoolId()).execute();
             AuthenticationEvent event = new AuthenticationEvent();
             event.setUser(response.body());
             if(response.body() != null) {
