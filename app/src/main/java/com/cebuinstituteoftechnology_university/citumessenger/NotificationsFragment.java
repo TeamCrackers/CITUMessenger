@@ -11,8 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cebuinstituteoftechnology_university.citumessenger.Adapters.NotificationAdapter;
+import com.cebuinstituteoftechnology_university.citumessenger.BackgroundServices.ChatService;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Notification;
+import com.cebuinstituteoftechnology_university.citumessenger.Models.Request;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -23,9 +26,9 @@ import de.greenrobot.event.EventBus;
 public class NotificationsFragment extends android.support.v4.app.Fragment {
 
     @Bind(R.id.notificationList)
-    RecyclerView notificationList;
-    RecyclerView.LayoutManager notificationManager;
-    NotificationAdapter notificationAdapter;
+    public RecyclerView notificationList;
+    public RecyclerView.LayoutManager notificationManager;
+    public NotificationAdapter notificationAdapter;
     public NotificationsFragment() {
 
     }
@@ -43,9 +46,10 @@ public class NotificationsFragment extends android.support.v4.app.Fragment {
         notificationList.setHasFixedSize(true);
         notificationManager = new LinearLayoutManager(view.getContext());
         notificationList.setLayoutManager(notificationManager);
-        notificationAdapter  = new NotificationAdapter(new ArrayList<Notification>());
+        notificationAdapter  = new NotificationAdapter(new ArrayList<Serializable>());
         notificationList.setAdapter(notificationAdapter);
-        test_SampleData();
+        ChatService.getAllRequest(this.getContext());
+        //test_SampleData();
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -56,8 +60,10 @@ public class NotificationsFragment extends android.support.v4.app.Fragment {
         Notification sample2 = new Notification();
         sample2.setTitle("Chuya recycler oi");
         sample2.setDescription("Oh mao na");
+
         notificationAdapter.addNewNotification(sample);
         notificationAdapter.addNewNotification(sample2);
+
     }
 
     @Override

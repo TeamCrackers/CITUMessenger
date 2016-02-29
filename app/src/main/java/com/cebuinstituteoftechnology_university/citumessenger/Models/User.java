@@ -24,7 +24,6 @@ public class User implements Serializable{
 
     // Messenger information
     private List<String> friends;
-    private List<String> conversations;
 
     // Security Information
     private String accessToken;
@@ -116,13 +115,6 @@ public class User implements Serializable{
         this.friends = friends;
     }
 
-    public List<String> getConversations() {
-        return conversations;
-    }
-
-    public void setConversations(List<String> conversations) {
-        this.conversations = conversations;
-    }
 
     public String getAccessToken() {
         return accessToken;
@@ -146,5 +138,14 @@ public class User implements Serializable{
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean result = false;
+        if(o!=null  && o instanceof User ){
+            result = ((User)o).getSchoolId().contentEquals(this.schoolId);
+        }
+        return result;
     }
 }

@@ -82,7 +82,7 @@ public class ChatActivity extends AppCompatActivity {
         try {
             chatService = new ChatService();
             chatService.initializeSocket(HomeActivity.CURRENT_USER);
-            chatService.startConversation(this,CURRENT_CONVERSATION);
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

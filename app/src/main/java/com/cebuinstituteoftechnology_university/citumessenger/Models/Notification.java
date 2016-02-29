@@ -2,10 +2,12 @@ package com.cebuinstituteoftechnology_university.citumessenger.Models;
 
 import android.net.Uri;
 
+import java.io.Serializable;
+
 /**
  * Created by osias on 1/28/2016.
  */
-public class Notification {
+public class Notification implements Serializable{
     private String title;
     private String description;
     private Uri imgSrc;

@@ -69,6 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
             user.setEmail(email.getEditableText().toString());
             user.setSchoolId(idNumber.getEditableText().toString());
             user.setPassword(password.getText().toString());
+            user.setNickName(nickName.getText().toString());
             AuthenticationService.startActionRegister(this,user);
         }
     }

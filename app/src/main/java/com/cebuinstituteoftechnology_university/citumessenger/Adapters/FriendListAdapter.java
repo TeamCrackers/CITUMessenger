@@ -14,6 +14,7 @@ import com.cebuinstituteoftechnology_university.citumessenger.ChatActivity;
 import com.cebuinstituteoftechnology_university.citumessenger.HomeActivity;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Conversation;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Friends;
+import com.cebuinstituteoftechnology_university.citumessenger.Models.Request;
 import com.cebuinstituteoftechnology_university.citumessenger.R;
 //import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -81,14 +82,12 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
                 @Override
                 public void onClick(View v) {
-                    Snackbar snack = Snackbar.make((View) v.getParent(), "Start converstaion with " + friendName.getText().toString(), Snackbar.LENGTH_SHORT);
+                    Snackbar snack = Snackbar.make((View) v.getParent(), "Request conversation with " + friendName.getText().toString(), Snackbar.LENGTH_SHORT);
                     snack.setAction("OK", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Conversation conversation = new Conversation();
-                            conversation.addParticipant(HomeActivity.CURRENT_USER);
-                            conversation.addParticipant(friend.getUserInfo());
-                            ChatActivity.startChatActivity(v,conversation );
+                            ChatService.sendRequestToJoin(v.getContext(),new Request(conversation.getId(),friend.getUserInfo().getSchoolId(),HomeActivity.CURRENT_USER.getSchoolId()));
                         }
                     });
                     snack.show();

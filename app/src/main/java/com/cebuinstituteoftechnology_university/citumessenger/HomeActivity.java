@@ -2,6 +2,7 @@ package com.cebuinstituteoftechnology_university.citumessenger;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,10 +11,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.cebuinstituteoftechnology_university.citumessenger.BackgroundServices.AuthenticationService;
+import com.cebuinstituteoftechnology_university.citumessenger.BackgroundServices.ChatService;
 import com.cebuinstituteoftechnology_university.citumessenger.Events.AuthenticationEvent;
+import com.cebuinstituteoftechnology_university.citumessenger.Models.Conversation;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Friends;
+import com.cebuinstituteoftechnology_university.citumessenger.Models.Request;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
 
 import java.util.ArrayList;
@@ -30,7 +35,8 @@ public class HomeActivity extends AppCompatActivity {
     private ViewPager viewPager;
     public static User CURRENT_USER = null;
     FriendsFragment friendsFragment;
-
+    InboxFragment inboxFragment;
+    NotificationsFragment notificationsFragment;
     // For notifications
 
 
@@ -66,22 +72,45 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public void onEvent(AuthenticationEvent event)
-    {
-        if(event.getMessage() == AuthenticationEvent.USER_GET_SUCCESS)
-        {
-            final User user = event.getUser();
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Friends friend = new Friends();
-                    friend.setUserInfo(user);
-                    friendsFragment.addFriend(friend);
-                }
-            });
+    public void onEvent(Request request){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(HomeActivity.this,"Request sent successfully",Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        }
     }
+
+    public void onEvent(final User []friends){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for(User friend:friends){
+                    Friends friendTemp = new Friends();
+                    friendTemp.setUserInfo(friend);
+                    HomeActivity.this.friendsFragment.addFriend(friendTemp);
+                }
+            }
+        });
+    }
+
+    public void onEvent(final ArrayList<Request> yourRequests){
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (Request request : yourRequests) {
+                    HomeActivity.this.notificationsFragment.notificationAdapter.addRequest(request);
+                }
+            }
+        });
+    }
+
+    public void onEvent(Conversation conversation){
+        inboxFragment.inboxAdapter.addConversation(conversation);
+    }
+
 
     @Override
     protected void onResume() {
@@ -89,12 +118,9 @@ public class HomeActivity extends AppCompatActivity {
         if(CURRENT_USER!=null)
         {
             friendsFragment.clearFriendList();
-            for(String s: CURRENT_USER.getFriends())
-            {
-                User n = new User(null,null);
-                n.setSchoolId(s);
-                AuthenticationService.getUser(this, n);
-            }
+
+            ChatService.startLoadingAllConversations(this, CURRENT_USER);
+            AuthenticationService.getFriends(this);
 
         }
 
@@ -109,12 +135,13 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         friendsFragment = new FriendsFragment();
+        inboxFragment = new InboxFragment();
+        notificationsFragment = new NotificationsFragment();
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new InboxFragment(), "INBOX");
+        adapter.addFragment(inboxFragment, "MESSAGES");
         adapter.addFragment(friendsFragment, "FRIENDS");
-        adapter.addFragment(new NotificationsFragment(), "NOTIFS");
+        adapter.addFragment(notificationsFragment, "NOTIFS");
         viewPager.setAdapter(adapter);
-
     }
 
     public void startChatActivity(){

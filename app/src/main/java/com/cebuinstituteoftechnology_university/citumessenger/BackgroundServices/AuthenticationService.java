@@ -8,9 +8,12 @@ import com.cebuinstituteoftechnology_university.citumessenger.APIRestInterfaces.
 import com.cebuinstituteoftechnology_university.citumessenger.Config.AppConfig;
 import com.cebuinstituteoftechnology_university.citumessenger.Events.AuthenticationEvent;
 import com.cebuinstituteoftechnology_university.citumessenger.Events.MessageEvent;
+import com.cebuinstituteoftechnology_university.citumessenger.HomeActivity;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import retrofit.GsonConverterFactory;
@@ -23,7 +26,8 @@ public class AuthenticationService extends IntentService {
     public static final String ACTION_CHECK_ACCESS_TOKEN = "CHECK_TOKEN";
     public static final String ACTION_LOGIN = "USER_LOGIN";
     public static final String ACTION_REGISTER = "USER_REGISTER";
-    public static final String ACTION_GET_FRIEND = "GET_FRIEND";
+    public static final String ACTION_GET_USER = "GET_USER";
+    public static final String ACTION_GET_FRIENDS = "GET_FRIENDS";
 
 
     private static final String EXTRA_USERID = "userid";
@@ -61,7 +65,7 @@ public class AuthenticationService extends IntentService {
 
     public static void getUser(Context context, User user){
         Intent intent = new Intent(context, AuthenticationService.class);
-        intent.setAction(ACTION_GET_FRIEND);
+        intent.setAction(ACTION_GET_USER);
         intent.putExtra(EXTRA_USER_OBJECT,user);
         context.startService(intent);
     }
@@ -77,6 +81,29 @@ public class AuthenticationService extends IntentService {
                 .build();
         userAPI = retrofit.create(UserAPI.class);
     }
+
+    public static void getFriends(Context context){
+        Intent intent = new Intent(context, AuthenticationService.class);
+        intent.setAction(ACTION_GET_FRIENDS);
+        intent.putExtra(EXTRA_USER_OBJECT, HomeActivity.CURRENT_USER);
+        context.startService(intent);
+    }
+
+    private static void getFriends(User user){
+        List<User> friends = new ArrayList<>();
+        for(String friendId : user.getFriends()){
+            try {
+                User temp = userAPI.getUser(friendId).execute().body();
+                if(temp!=null)
+                    friends.add(temp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        EventBus.getDefault().post(friends.toArray(new User[friends.size()]));
+    }
+
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -96,10 +123,15 @@ public class AuthenticationService extends IntentService {
             else if(ACTION_REGISTER.equals(action)){
                 handleActionRegister((User) intent.getSerializableExtra(EXTRA_USER_OBJECT));
             }
-            else if(ACTION_GET_FRIEND.equals(action))
+            else if(ACTION_GET_USER.equals(action))
             {
                 handleGetUser((User)intent.getSerializableExtra(EXTRA_USER_OBJECT));
             }
+            else if(ACTION_GET_FRIENDS.equals(action))
+            {
+                getFriends((User)intent.getSerializableExtra(EXTRA_USER_OBJECT));
+            }
+
         }
     }
 
