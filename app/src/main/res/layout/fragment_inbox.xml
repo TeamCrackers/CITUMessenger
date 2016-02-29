@@ -4,12 +4,12 @@
     android:layout_height="match_parent"
     tools:context="com.cebuinstituteoftechnology_university.citumessenger.InboxFragment">
 
-    <TextView
+
+    <android.support.v7.widget.RecyclerView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="INBOX"
-        android:textSize="40dp"
-        android:textStyle="bold"
-        android:layout_centerInParent="true"/>
-
+        android:id="@+id/inbox_list"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

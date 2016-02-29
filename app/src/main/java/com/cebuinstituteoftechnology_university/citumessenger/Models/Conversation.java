@@ -2,6 +2,7 @@ package com.cebuinstituteoftechnology_university.citumessenger.Models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +13,9 @@ public class Conversation implements Serializable{
     String id;
     List<User> participants;
     List<Message> messages;
+    Date recentUpdate;
+
+
 
     public Conversation() {
         id = UUID.randomUUID().toString();
@@ -44,5 +48,13 @@ public class Conversation implements Serializable{
 
     public void setMessages(List<Message> messages) {
         this.messages = messages;
+    }
+
+    public Date getRecentUpdate() {
+        return recentUpdate;
+    }
+
+    public void setRecentUpdate(Date recentUpdate) {
+        this.recentUpdate = recentUpdate;
     }
 }

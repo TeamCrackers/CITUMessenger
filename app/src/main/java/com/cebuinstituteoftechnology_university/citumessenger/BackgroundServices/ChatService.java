@@ -153,4 +153,8 @@ public class ChatService extends IntentService{
         context.startService(intent);
 
     }
+
+    public static void leaveConversation(Conversation selectedConversation) {
+
+    }
 }
