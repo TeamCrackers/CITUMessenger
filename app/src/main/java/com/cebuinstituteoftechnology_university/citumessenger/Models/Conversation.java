@@ -23,6 +23,7 @@ public class Conversation implements Serializable{
     }
 
     public void addParticipant(User user){participants.add(user);}
+    public void removeParticipant(User user) { participants.remove(user);}
     public void addMessage(Message message){messages.add(message);}
 
     public String getId() {

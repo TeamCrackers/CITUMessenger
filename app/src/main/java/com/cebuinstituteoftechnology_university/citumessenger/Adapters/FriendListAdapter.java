@@ -88,6 +88,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
                         public void onClick(View v) {
                             Conversation conversation = new Conversation();
                             ChatService.sendRequestToJoin(v.getContext(),new Request(conversation.getId(),friend.getUserInfo().getSchoolId(),HomeActivity.CURRENT_USER.getSchoolId()));
+                            ChatService.joinConversation(v.getContext(), conversation);
+                            ChatService.startLoadingAllConversations(v.getContext(),HomeActivity.CURRENT_USER);
                         }
                     });
                     snack.show();

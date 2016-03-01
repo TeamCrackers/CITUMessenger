@@ -10,16 +10,26 @@ public class Message implements Serializable {
     private long id;
     private String message;
     private String userId;
+    String conversationId;
     private Date timeStamp;
 
     public Message() {
     }
 
-    public Message(long id, String message, String userId, Date timeStamp) {
+    public Message(long id, String message, String userId, Date timeStamp,String conversationId) {
         this.id = id;
         this.message = message;
         this.userId = userId;
         this.timeStamp = timeStamp;
+        this.conversationId = conversationId;
+    }
+
+    public String getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
     }
 
     public long getId() {

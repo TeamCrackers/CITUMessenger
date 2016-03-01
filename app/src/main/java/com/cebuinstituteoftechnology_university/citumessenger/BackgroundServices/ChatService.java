@@ -7,16 +7,20 @@ import android.util.Log;
 
 import com.cebuinstituteoftechnology_university.citumessenger.APIRestInterfaces.ChatAPI;
 import com.cebuinstituteoftechnology_university.citumessenger.APIRestInterfaces.UserAPI;
+import com.cebuinstituteoftechnology_university.citumessenger.ChatActivity;
 import com.cebuinstituteoftechnology_university.citumessenger.Config.AppConfig;
 import com.cebuinstituteoftechnology_university.citumessenger.HomeActivity;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Conversation;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Message;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Request;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -35,6 +39,7 @@ public class ChatService extends IntentService{
 
     public static final String EVENT_RECEIVE_MESSAGE = "receive message";
     public static final String EVENT_SEND_MESSAGE = "send message";
+
     public static final String EVENT_START_CONVERSATION = "join room";
     public static final String EVENT_LOAD_CONVERSATIONS ="Load Conversations" ;
     public static final String EVENT_REQUEST_JOIN = "request to join";
@@ -47,6 +52,7 @@ public class ChatService extends IntentService{
     public static final String EXTRA_CONVERSATION = "Conversation Extra";
     public static final String EXTRA_USER = "User extra";
     public static final String EXTRA_REQUEST = "Reuqest extra";
+    private static final String EVENT_LEAVE_CONVERSATION = "leave room";
 
     public static Socket socket;
     private static Emitter.Listener receiveMessage;
@@ -67,22 +73,20 @@ public class ChatService extends IntentService{
         chatAPI = retrofit.create(ChatAPI.class);
     }
 
-    public void initializeSocket(User user) throws URISyntaxException{
+    public static void initializeSocket(User user) throws URISyntaxException{
         if(socket == null || !socket.connected()) {
             socket = IO.socket("http://" + SERVER_IP_ADDRESS + ":" + SERVER_PORT + "/");
-            setReceiveMessage();
             setDisconnect();
             setReconnect();
-            setConnct();
+            setConnect();
             socket.on(Socket.EVENT_CONNECT, connect);
             socket.on(Socket.EVENT_DISCONNECT, disconnect);
             socket.on(Socket.EVENT_RECONNECT, reconnect);
-            socket.on(EVENT_RECEIVE_MESSAGE, receiveMessage);
+            socket.on(EVENT_RECEIVE_MESSAGE, receiveMessage());
             socket.connect();
         }
     }
-
-    private static void setConnct(){
+    private static void setConnect(){
         connect = new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -90,11 +94,13 @@ public class ChatService extends IntentService{
             }
         };
     }
-    private static void setReceiveMessage(){
-        receiveMessage = new Emitter.Listener() {
+    private static Emitter.Listener receiveMessage(){
+        return new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Message message = new Message();
+                JSONObject objs = (JSONObject)args[0];
+                Gson gson = new Gson();
+                Message message = gson.fromJson(objs.toString(),Message.class);
                 ChatService.eventBus.post(message);
             }
         };
@@ -116,13 +122,25 @@ public class ChatService extends IntentService{
         };
     }
 
-    public static boolean sendMessage(Message message){
+    private static boolean sendMessage(ChatActivity.SendMessage message){
         boolean result = false;
         if(socket!=null &&socket.connected()) {
-            socket.emit(EVENT_SEND_MESSAGE, message);
-            result = true;
+            Gson gson = new Gson();
+            try {
+                socket.emit(EVENT_SEND_MESSAGE,new JSONObject(gson.toJson(message.getMessage())));
+                message.setSent(true);
+                eventBus.post(message);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         return result;
+    }
+    public static void sendMessage(Context context,ChatActivity.SendMessage message){
+        Intent intent = new Intent(context,ChatService.class);
+        intent.setAction(ChatService.EVENT_SEND_MESSAGE);
+        intent.putExtra(ChatService.EXTRA_MESSAGE, message);
+        context.startService(intent);
     }
 
     private static void joinConversation(Conversation conversation){
@@ -130,15 +148,17 @@ public class ChatService extends IntentService{
             Response<User> response = userAPI.getUser(HomeActivity.CURRENT_USER.getSchoolId()).execute();
             if(response.body()!=null) {
                 boolean ok;
-                if (chatAPI.getConversation(conversation.getId()).execute().body() != null) {
-                    chatAPI.createConversation(conversation);
+                if (chatAPI.getConversation(conversation.getId()).execute().body() == null) {
+                    chatAPI.createConversation(conversation).execute();
                 }
                 conversation = chatAPI.getConversation(conversation.getId()).execute().body();
-                if(!conversation.getParticipants().contains(HomeActivity.CURRENT_USER))
+
+                if(conversation!=null && !conversation.getParticipants().contains(HomeActivity.CURRENT_USER))
                     conversation.addParticipant(HomeActivity.CURRENT_USER);
                 ok = chatAPI.updateConversation(conversation).execute().body();
-                if (ok)
-                    socket.emit(EVENT_START_CONVERSATION, conversation);
+                if (ok) {
+                    socket.emit(EVENT_START_CONVERSATION, conversation.getId());
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -165,7 +185,21 @@ public class ChatService extends IntentService{
         }
 
     }
-    public static void loadConversations(User user){
+    private static void loadConversations(User user){
+        try {
+            List<Conversation> conversations = chatAPI.getAllConversation(user.getSchoolId()).execute().body();
+            if(conversations!=null){
+                eventBus.post(conversations);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void loadConversations(Context context){
+        Intent intent = new Intent(context,ChatService.class);
+        intent.setAction(EVENT_LOAD_CONVERSATIONS);
+        intent.putExtra(EXTRA_USER, HomeActivity.CURRENT_USER);
+        context.startService(intent);
     }
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -173,7 +207,7 @@ public class ChatService extends IntentService{
         {
             final String action = intent.getAction();
             if(action.contentEquals(ChatService.EVENT_SEND_MESSAGE))
-                sendMessage((Message)intent.getSerializableExtra(EXTRA_MESSAGE));
+                sendMessage((ChatActivity.SendMessage)intent.getSerializableExtra(EXTRA_MESSAGE));
             else if(action.contentEquals(ChatService.EVENT_START_CONVERSATION))
                 joinConversation(((Conversation)intent.getSerializableExtra(EXTRA_CONVERSATION)));
             else if(action.contentEquals(ChatService.EVENT_LOAD_CONVERSATIONS))
@@ -182,6 +216,30 @@ public class ChatService extends IntentService{
                 requestToJoin((Request)intent.getSerializableExtra(EXTRA_REQUEST));
             else if(action.contentEquals(ChatService.EVENT_GET_REQUESTS))
                 getAllRequests((User)intent.getSerializableExtra(EXTRA_USER));
+            else if(action.contentEquals(EVENT_LEAVE_CONVERSATION))
+                leaveConversation((Conversation)intent.getSerializableExtra(EXTRA_CONVERSATION));
+        }
+    }
+
+    private void leaveConversation(Conversation conversation) {
+        try {
+            Response<User> response = userAPI.getUser(HomeActivity.CURRENT_USER.getSchoolId()).execute();
+            if(response.body()!=null) {
+                boolean ok;
+                if (chatAPI.getConversation(conversation.getId()).execute().body() == null) {
+                    chatAPI.createConversation(conversation).execute();
+                }
+                conversation = chatAPI.getConversation(conversation.getId()).execute().body();
+
+                if(conversation!=null && conversation.getParticipants().contains(HomeActivity.CURRENT_USER))
+                    conversation.removeParticipant(HomeActivity.CURRENT_USER);
+                ok = chatAPI.updateConversation(conversation).execute().body();
+                if (ok) {
+                    socket.emit(EVENT_LEAVE_CONVERSATION, conversation.getId());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -215,7 +273,10 @@ public class ChatService extends IntentService{
         context.startService(intent);
     }
 
-    public static void leaveConversation(Conversation selectedConversation) {
-
+    public static void leaveConversation(Context context,Conversation selectedConversation) {
+        Intent intent = new Intent(context,ChatService.class);
+        intent.setAction(EVENT_LEAVE_CONVERSATION);
+        intent.putExtra(EXTRA_CONVERSATION,selectedConversation);
+        context.startService(intent);
     }
 }

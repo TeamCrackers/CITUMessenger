@@ -21,6 +21,7 @@ import com.cebuinstituteoftechnology_university.citumessenger.Models.Friends;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Request;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -37,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
     FriendsFragment friendsFragment;
     InboxFragment inboxFragment;
     NotificationsFragment notificationsFragment;
-    // For notifications
+
 
 
     private int[] tabIcons = {
@@ -95,22 +96,20 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    public void onEvent(final ArrayList<Request> yourRequests){
-
+    public void onEvent(final ArrayList<Serializable> serializables){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for (Request request : yourRequests) {
-                    HomeActivity.this.notificationsFragment.notificationAdapter.addRequest(request);
+                HomeActivity.this.inboxFragment.inboxAdapter.clear();
+                for (Serializable serializable : serializables) {
+                    if (serializable instanceof Request)
+                        HomeActivity.this.notificationsFragment.notificationAdapter.addRequest((Request) serializable);
+                    else
+                        HomeActivity.this.inboxFragment.inboxAdapter.addConversation((Conversation) serializable);
                 }
             }
         });
     }
-
-    public void onEvent(Conversation conversation){
-        inboxFragment.inboxAdapter.addConversation(conversation);
-    }
-
 
     @Override
     protected void onResume() {

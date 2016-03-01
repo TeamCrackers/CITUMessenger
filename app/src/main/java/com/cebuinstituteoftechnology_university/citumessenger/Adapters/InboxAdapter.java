@@ -64,6 +64,11 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
     }
 
     @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+    }
+
+    @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Conversation selectedConversation = conversations.get(position);
         if(selectedConversation!=null) {
@@ -90,6 +95,11 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
         return conversations.size();
     }
 
+    public void clear() {
+        this.conversations.clear();
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public String conversationId;
         @Bind(R.id.inbox_image)
@@ -113,12 +123,13 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
             leaveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ChatService.leaveConversation(conversation);
+                    ChatService.leaveConversation(v.getContext(),conversation);
                 }
             });
             inboxCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ChatService.joinConversation(v.getContext(),conversation);
                     ChatActivity.startChatActivity(v,conversation);
                 }
             });

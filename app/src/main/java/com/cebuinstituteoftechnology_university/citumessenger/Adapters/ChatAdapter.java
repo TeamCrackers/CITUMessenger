@@ -72,8 +72,7 @@ public class ChatAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         //to simulate whether it me or other sender
-        boolean chatPosition = (chatMessage.getUserId().contentEquals(userId) ?
-                                        true : false);
+        boolean chatPosition = (chatMessage.getUserId().contentEquals(userId) ?true : false);
         setAlignment(holder, chatPosition);
         holder.chatMessage.setText(chatMessage.getMessage());
         holder.chatInfo.setText(chatMessage.getTimeStamp().toString());
@@ -83,6 +82,7 @@ public class ChatAdapter extends BaseAdapter {
 
     public void add(Message message) {
         chatHistory.add(message);
+        this.notifyDataSetChanged();
     }
 
     public void add(List<Message> messages) {

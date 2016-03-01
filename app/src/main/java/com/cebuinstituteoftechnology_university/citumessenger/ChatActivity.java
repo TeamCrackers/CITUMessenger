@@ -21,6 +21,7 @@ import com.cebuinstituteoftechnology_university.citumessenger.Models.Conversatio
 import com.cebuinstituteoftechnology_university.citumessenger.Models.Message;
 import com.cebuinstituteoftechnology_university.citumessenger.Models.User;
 
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,7 +59,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.leaveRoom)
-    public void leaveRoom() {
+    public void leaveRoom(View view) {
+        ChatService.leaveConversation(view.getContext(),ChatActivity.CURRENT_CONVERSATION);
         this.finish();
     }
 
@@ -93,6 +95,46 @@ public class ChatActivity extends AppCompatActivity {
             AuthenticationService.getUser(this, user);
         }
     }
+    public static class SendMessage implements Serializable{
+        boolean sent;
+        Message message;
+
+        public SendMessage() {
+        }
+
+        public boolean isSent() {
+            return sent;
+        }
+
+        public void setSent(boolean sent) {
+            this.sent = sent;
+        }
+
+        public Message getMessage() {
+            return message;
+        }
+
+        public void setMessage(Message message) {
+            this.message = message;
+        }
+    }
+
+    public void onEvent(final SendMessage message){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(message.isSent())
+                {
+
+                    ChatActivity.this.displayMessage(message.getMessage());
+                    composeMessage.setText("");
+                }
+                else
+                    Snackbar.make(messagesContainer,"Failed to send",Snackbar.LENGTH_SHORT).show();
+
+            }
+        });
+    }
 
     public void onEvent(final AuthenticationEvent event){
         if(event.getMessage() == AuthenticationEvent.USER_GET_SUCCESS)
@@ -108,14 +150,19 @@ public class ChatActivity extends AppCompatActivity {
 
         }
     }
-    public void onEvent(Message message){
-        displayMessage(message);
+    public void onEvent(final Message message){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                displayMessage(message);
+            }
+        });
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Snackbar.make(messagesContainer,user1 + " "+ user2,Snackbar.LENGTH_SHORT).show();
     }
     @OnClick(R.id.sendButton)
     public void sendMessage()
@@ -124,7 +171,10 @@ public class ChatActivity extends AppCompatActivity {
         message.setMessage(composeMessage.getText().toString());
         message.setTimeStamp(new Date());
         message.setUserId(HomeActivity.CURRENT_USER.getSchoolId());
-        chatService.sendMessage(message);
+        message.setConversationId(CURRENT_CONVERSATION.getId());
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setMessage(message);
+        ChatService.sendMessage(this,sendMessage);
     }
 
     public void displayMessage(Message message) {
